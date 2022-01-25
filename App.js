@@ -32,11 +32,16 @@ export default function App() {
     setCity(location[0].city)
     const response = await fetch(`https://api.openweathermap.org/data/2.5/onecall?lat=${latitude}&lon=${longitude}&exclude={part}&appid=${API_KEY}&units=metric`)
     const json = await response.json()
+    console.log(json.daily)
     setDays(json.daily)
   }
   useEffect(() => {
     getWeather()
   }, [])
+  const makeDate = (dt) => {
+    const date = new Date(dt * 1000)
+    return date.toLocaleDateString()
+  }
   return (
     <View style={styles.container}>
       <View style={styles.city}>
@@ -54,6 +59,7 @@ export default function App() {
           (
             days.map((day, index) =>
               <View key={index} style={styles.day}>
+                <Text style={styles.date}>{makeDate(day.dt)}</Text>
                 <View style={{ flexDirection: "row", alignItems: "center", width: "100%", justifyContent: "space-between" }}>
                   <Text style={styles.temp}>{parseFloat(day.temp.day).toFixed(1)}</Text>
                   <Fontisto name={icons[day.weather[0].main]} size={68} color="white" />
@@ -108,5 +114,9 @@ const styles = StyleSheet.create({
     fontSize: 25,
     color: "white",
     marginTop: -5
+  },
+  date: {
+    fontSize: 25,
+    color: "white",
   }
 });
